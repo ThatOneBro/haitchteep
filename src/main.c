@@ -14,16 +14,16 @@
 #define MAX_CLIENTS 10
 
 // Structure to track client state
-struct client_info {
+typedef struct ClientInfo {
   int fd;          // Socket file descriptor
   char *buffer;    // Dynamic buffer for incomplete reads
   size_t buf_used; // Amount of buffer currently used
   size_t buf_size; // Total buffer size
-};
+} ClientInfo;
 
 // Initialize a new client structure
-struct client_info *create_client(int fd) {
-  struct client_info *client = malloc(sizeof(struct client_info));
+ClientInfo *create_client(int fd) {
+  ClientInfo *client = malloc(sizeof(ClientInfo));
   if (!client)
     return NULL;
 
@@ -45,7 +45,7 @@ struct client_info *create_client(int fd) {
 }
 
 // Clean up client structure
-void free_client(struct client_info *client) {
+void free_client(ClientInfo *client) {
   if (client) {
     if (client->buffer) {
       free(client->buffer);
@@ -56,7 +56,7 @@ void free_client(struct client_info *client) {
 }
 
 // Handle data from a client
-void handle_client_data(struct client_info *client) {
+void handle_client_data(ClientInfo *client) {
   while (1) {
     // Ensure we have room in the buffer
     if (client->buf_used == client->buf_size) {
@@ -70,6 +70,7 @@ void handle_client_data(struct client_info *client) {
       client->buf_size = new_size;
     }
 
+    // TODO: Convert this to recv, potentially more performant
     // Read what we can
     ssize_t bytes_read = read(client->fd, client->buffer + client->buf_used,
                               client->buf_size - client->buf_used);
@@ -139,7 +140,7 @@ int main() {
 
   // Set up polling
   struct pollfd fds[MAX_CLIENTS + 1]; // +1 for the server socket
-  struct client_info *clients[MAX_CLIENTS] = {NULL};
+  ClientInfo *clients[MAX_CLIENTS] = {NULL};
   int nfds = 1;
 
   // Initialize server fd
