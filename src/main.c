@@ -177,10 +177,8 @@ int main()
 
                 switch (clients[client_idx]->state) {
                 case CLIENT_WRITING:
-                    printf("writing\n");
                     continue;
                 case CLIENT_READY: {
-                    printf("Hello\n");
                     RequestOrError *req_or_err = parse_request(clients[client_idx]);
                     handle_http_request(clients[client_idx], req_or_err);
                     free_request_or_error(req_or_err);

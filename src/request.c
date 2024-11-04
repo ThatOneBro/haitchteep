@@ -33,12 +33,12 @@ RequestOrError *parse_request(ClientInfo *client)
         curr++;
     }
 
-    RequestOrError *result = { 0 };
+    RequestOrError *result = create_request_or_error();
     bool valid_method = false;
 
     // Compare to all possible valid methods
     for (i = 0; i < sizeof(VALID_METHODS_LITERALS) / sizeof(char *); i++) {
-        if (memcmp(&client->buffer[curr], VALID_METHODS_LITERALS[i], curr) == 0) {
+        if (memcmp(&client->buffer[offset], VALID_METHODS_LITERALS[i], curr) == 0) {
             result->data.req.method = VALID_METHODS[i];
             valid_method = true;
         }

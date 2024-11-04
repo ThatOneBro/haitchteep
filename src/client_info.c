@@ -1,4 +1,5 @@
 #include "client_info.h"
+#include "http_utils.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -69,6 +70,10 @@ void handle_client_data(ClientInfo *client)
             printf("Received %zd bytes: %.*s", bytes_read, (int)bytes_read,
                 client->buffer + client->buf_used - bytes_read);
 
+            // If the end of the HTTP request, set client state to ready
+            if (check_http_end(client->buffer, client->buf_used)) {
+                client->state = CLIENT_READY;
+            }
         } else if (bytes_read == 0) {
             // End of stream
             // Set client state to ready
