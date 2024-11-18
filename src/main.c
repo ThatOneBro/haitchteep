@@ -1,5 +1,6 @@
 #include "client_info.h"
 #include "request.h"
+#include "request_parser.h"
 #include "response.h"
 #include <errno.h>
 #include <netinet/in.h>
@@ -40,6 +41,15 @@ static Response DEFAULT_RES_ROOT = {
     .status = STATUS_OK,
 };
 
+void handle_root_post(Request *req, Response *res)
+{
+    res->content_body = req->body;
+    res->content_len = req->content_len;
+    res->content_type = req->content_type;
+    res->status = STATUS_CREATED;
+    res->content_body = req->body;
+}
+
 void handle_http_request(ClientInfo *client, RequestOrError *req_or_err)
 {
     Response res;
@@ -55,10 +65,20 @@ void handle_http_request(ClientInfo *client, RequestOrError *req_or_err)
     } else {
         Request *req = &req_or_err->data.req;
 
-        if (req->method == METHOD_GET && strcmp(req->path, INDEX_PATH) == 0) {
-            res = DEFAULT_RES_ROOT;
+        char *path = req->has_external_path ? req->path.path_ptr : req->path.inline_path;
+
+        if (strcmp(path, INDEX_PATH) == 0) {
+            switch (req->method) {
+            case METHOD_GET:
+                res = DEFAULT_RES_ROOT;
+                break;
+            case METHOD_POST:
+                handle_root_post(req, &res);
+                break;
+            default:
+                res = NOT_FOUND_RES;
+            }
         } else {
-            // Respond with 404
             res = NOT_FOUND_RES;
         }
     }
@@ -172,8 +192,6 @@ int main()
             if (fds[i].revents & (POLLIN | POLLHUP)) {
                 int client_idx = i - 1;
                 handle_client_data(clients[client_idx]);
-
-                printf("State: %d\n", clients[client_idx]->state);
 
                 switch (clients[client_idx]->state) {
                 case CLIENT_WRITING:

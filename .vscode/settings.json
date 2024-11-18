@@ -28,7 +28,17 @@
     "errors.h": "c",
     "__config": "cpp",
     "client_info.h": "c",
-    "socket.h": "c"
+    "socket.h": "c",
+    "typeinfo": "c",
+    "__memory": "c",
+    "limits": "c",
+    "optional": "c",
+    "ratio": "c",
+    "tuple": "c",
+    "request.h": "c",
+    "unistd.h": "c",
+    "headers.h": "c",
+    "common.h": "c"
   },
   "editor.tabSize": 4
 }

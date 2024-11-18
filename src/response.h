@@ -2,17 +2,15 @@
 #define RESPONSE_H
 
 #include "client_info.h"
+#include "common.h"
 #include <time.h>
 
 typedef enum HttpStatus {
     STATUS_OK,
+    STATUS_CREATED,
     STATUS_BAD_REQUEST,
     STATUS_NOT_FOUND,
 } HttpStatus;
-
-typedef enum ContentType {
-    CONTENT_TYPE_PLAINTEXT
-} ContentType;
 
 typedef struct Response {
     struct timespec time;

@@ -1,16 +1,17 @@
 #include "response.h"
 #include "client_info.h"
+#include "common.h"
 #include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 
-const char *CONTENT_TYPE_LITERALS[] = { "text/plain; charset=us-ascii" };
-const ContentType CONTENT_TYPES[] = { CONTENT_TYPE_PLAINTEXT };
+const char *CONTENT_TYPE_LITERALS[] = { "text/plain; charset=us-ascii", "application/json" };
+const ContentType CONTENT_TYPES[] = { CONTENT_TYPE_PLAINTEXT, CONTENT_TYPE_JSON };
 
-const char *STATUS_LITERALS[] = { "200 OK", "400 Bad Request", "404 Not Found" };
-const HttpStatus STATUSES[] = { STATUS_OK, STATUS_BAD_REQUEST, STATUS_NOT_FOUND };
+const char *STATUS_LITERALS[] = { "200 OK", "201 Created", "400 Bad Request", "404 Not Found" };
+const HttpStatus STATUSES[] = { STATUS_OK, STATUS_CREATED, STATUS_BAD_REQUEST, STATUS_NOT_FOUND };
 
 const char HTTP_VERSION[] = "HTTP/1.1";
 

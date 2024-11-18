@@ -71,7 +71,7 @@ void handle_client_data(ClientInfo *client)
                 client->buffer + client->buf_used - bytes_read);
 
             // If the end of the HTTP request, set client state to ready
-            if (check_http_end(client->buffer, client->buf_used)) {
+            if (check_http_end(client)) {
                 client->state = CLIENT_READY;
             }
         } else if (bytes_read == 0) {

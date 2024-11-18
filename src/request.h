@@ -1,19 +1,33 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
-#include "client_info.h"
+#include "common.h"
 #include <stdbool.h>
+#include <stddef.h>
 
-#define MAX_PATH_BYTES 1024
+#define MAX_INLINE_PATH_BYTES 64
 
 typedef enum RequestMethod {
-    METHOD_POST,
     METHOD_GET,
+    METHOD_POST,
+    METHOD_PUT,
+    METHOD_OPTIONS,
+    METHOD_HEAD,
+    METHOD_DELETE,
+    METHOD_TRACE,
+    METHOD_PATCH,
 } RequestMethod;
 
 typedef struct Request {
+    bool has_external_path;
+    union path {
+        char inline_path[MAX_INLINE_PATH_BYTES];
+        char *path_ptr;
+    } path;
+    char *body;
+    size_t content_len;
     RequestMethod method;
-    char path[MAX_PATH_BYTES];
+    ContentType content_type;
 } Request;
 
 typedef enum ErrorEnum {
@@ -29,7 +43,9 @@ typedef struct RequestOrError {
 } RequestOrError;
 
 extern RequestOrError *create_request_or_error();
-extern RequestOrError *parse_request(ClientInfo *client);
 extern void free_request_or_error(RequestOrError *req_or_err);
+
+extern const char *VALID_METHODS_LITERALS[8];
+extern const RequestMethod VALID_METHODS[8];
 
 #endif // REQUEST_H
